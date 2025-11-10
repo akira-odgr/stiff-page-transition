@@ -7,7 +7,7 @@ import gsap from "gsap";
 export const PageTransition = ({ children }: { children: ReactNode }) => {
     const router = useRouter();
     const pathname = usePathname();
-    const overlayRef = useRef<HTMLElement>(null);
+    const overlayRef = useRef<HTMLDivElement | null>(null);
     const isTransitioning = useRef(false);
     const hasPlayedInitial = useRef(false);
     const previousPathname = useRef<string | null>(null);
