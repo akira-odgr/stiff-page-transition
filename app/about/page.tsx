@@ -1,6 +1,35 @@
 "use client";
 
+import { useTransition } from "@/context/TransitionContext";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { useRef } from "react";
+
 export const AboutPage = () => {
+    const aboutContainerRef = useRef<HTMLDivElement | null>(null);
+    const { setEntryAnimations } = useTransition();
+
+    useGSAP(
+        () => {
+            setEntryAnimations(() => {
+                gsap.from(".title", {
+                    y: 100,
+                    rotate: 10,
+                    duration: 1,
+                    ease: "back.out(1.7)",
+                });
+
+                gsap.from(".paragraph", {
+                    y: 50,
+                    rotate: 10,
+                    duration: 0.8,
+                    ease: "power2.out",
+                });
+            });
+        },
+        { scope: aboutContainerRef }
+    );
+
     return (
         <>
             <div className="flex h-screen flex-col items-center justify-center gap-10">

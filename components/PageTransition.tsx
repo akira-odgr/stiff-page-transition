@@ -3,10 +3,12 @@
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useEffect, useRef } from "react";
 import gsap from "gsap";
+import { useTransition } from "@/context/TransitionContext";
 
 export const PageTransition = ({ children }: { children: ReactNode }) => {
     const router = useRouter();
     const pathname = usePathname();
+    const { getEntryAnimations } = useTransition();
     const overlayRef = useRef<HTMLDivElement | null>(null);
     const isTransitioning = useRef(false);
     const hasPlayedInitial = useRef(false);
@@ -22,6 +24,7 @@ export const PageTransition = ({ children }: { children: ReactNode }) => {
     }, [pathname]);
 
     const playEntryAnimation = () => {
+        const entryAnimationsFn = getEntryAnimations();
         const isRoutChange = previousPathname.current !== null;
 
         const entryTl = gsap.timeline({
@@ -55,6 +58,26 @@ export const PageTransition = ({ children }: { children: ReactNode }) => {
             ease: "power2.inOut",
         });
 
+        if (entryAnimationsFn) {
+            if (entryAnimationsFn.length > 0) {
+                const pageTl = gsap.timeline();
+
+                const timelineFn = entryAnimationsFn as (
+                    tl: gsap.core.Timeline
+                ) => void;
+                timelineFn(pageTl);
+                entryTl.add(pageTl, "<");
+            } else {
+                const freeFn = entryAnimationsFn as () => void;
+                entryTl.call(
+                    () => {
+                        freeFn();
+                    },
+                    [],
+                    "<"
+                );
+            }
+        }
         entryTl.play();
     };
 

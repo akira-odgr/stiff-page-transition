@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { PageTransition } from "@/components/PageTransition";
 import Nav from "@/components/Nav";
+import { TransitionProvider } from "@/context/TransitionContext";
 
 const inter = Inter({
     subsets: ["latin"],
@@ -21,10 +22,12 @@ export default function RootLayout({
     return (
         <html lang="ja">
             <body className={`${inter.className} text-[#eeebd8] antialiased`}>
-                <PageTransition>
-                    <Nav />
-                    <main className="page-content">{children}</main>
-                </PageTransition>
+                <TransitionProvider>
+                    <PageTransition>
+                        <Nav />
+                        <main className="page-content">{children}</main>
+                    </PageTransition>
+                </TransitionProvider>
             </body>
         </html>
     );
